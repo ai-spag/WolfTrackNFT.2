@@ -1,0 +1,34 @@
+name: Rust CI Build
+
+on:
+  push:
+    branches: [ "main" ] # or "master"
+  pull_request:
+    branches: [ "main" ] # or "master"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Or macos-latest, windows-latest
+
+    steps:
+    - uses: actions/checkout@v4 # Checks out your repository
+
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable # A dedicated action for installing Rust
+      with:
+        toolchain: stable
+        components: rustfmt # This installs rustfmt too
+
+    # You don't need 'source $HOME/.cargo/env' explicitly here,
+    # as the 'rust-toolchain' action sets up the environment variables correctly.
+
+    - name: Build
+      run: cargo build --verbose # Build your project
+      working-directory: my_first_app # If your Rust project is in a subfolder
+
+    - name: Run tests (Optional)
+      run: cargo test --verbose
+      working-directory: my_first_app # If your Rust project is in a subfolder
